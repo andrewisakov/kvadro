@@ -1,0 +1,1 @@
+delete from table1 where id=:id;

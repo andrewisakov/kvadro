@@ -1,0 +1,9 @@
+#top_panel {
+    background: #AAAAAA;
+    margin-bottom: 5px;
+}
+
+#error_field {
+    display: none;
+    background: #FF7777;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>Тестовое задание kvadra</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Добавим поддержку HTML5 для IE6-8 -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <script type="text/javascript"
+        src="https://cdn.rawgit.com/brython-dev/brython/stable/www/src/brython.js"></script>
+        <link rel="stylesheet" href="{{ static_url('css/main.css') }}" type="text/css"/>
+        <script type="text/python3" src="{{ static_url('py/kvadro_ajax.py') }}"></script>
+
+    </head>
+<body onload="brython(1)">
+    <div id="top_panel">
+        <button id="get_text">Загрузить</button>
+        <button id="delete_selected">Удалить выбранное</button>
+    </div>
+    <div id="error_field">
+
+    </div>
+    <div id="text_form">
+        <input id="text_field" type="text" rows="5"/>
+        <button id="upload_text">Отправить</button>
+    </div>
+</body>
+</html>
