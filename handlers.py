@@ -17,6 +17,27 @@ async def get_query(sql):
     return query
 
 
+def create_database():
+    c = db.cursor()
+    with open('sql/create_database.sql', 'r') as f:
+        query = ''.join(f.readlines())
+    # query = await get_query('sql/create_database.sql')
+    c.execute(query)
+    c.close()
+    db.commit()
+
+
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
+db.row_factory = dict_factory
+create_database()
+
+
 class MainHandler(tornado.web.RequestHandler):
     async def get(self):
         self.render("index.html", messages=None)
@@ -26,9 +47,9 @@ class AjaxHandler(tornado.web.RequestHandler):
     SUPPORTED_METHODS = ('GET', 'POST', 'DELETE')
 
     async def delete(self):
-        print('REST.delete data received:', self.request.body)
+        # print('REST.delete data received:', self.request.body)
         json_data = json_decode(self.request.body)
-        print('REST.delete json data received:', json_data)
+        # print('REST.delete json data received:', json_data)
         query = await get_query('sql/delete_rows.sql')
         response = {'method': 'delete'}
         try:
@@ -39,16 +60,16 @@ class AjaxHandler(tornado.web.RequestHandler):
             db.commit()
             response.update({
                              'code': 0,
-                             'deleted': len(json_data['delete'])
+                             'deleted': json_data['delete'],
                             })
         except Exception as e:
             db.rollback()
             response.update({'code': -1, 'error': str(e)})
-        print(response)
+        # print(response)
         self.write(json_encode(response))
 
     async def get(self):
-        print('REST.get data received:', self.request.body)
+        # print('REST.get data received:', self.request.body)
         # json_data = json_decode(self.request.body)
         # print('REST.get json data received:', json_data)
         query = await get_query('sql/select_rows.sql')
@@ -58,17 +79,17 @@ class AjaxHandler(tornado.web.RequestHandler):
             print(query)
             response.update({
                         'code': 0,
-                        'result': {r[0]: r[1] for r in c.execute(query)},
+                        'result': [r for r in c.execute(query)],
                        })
             c.close()
         except Exception as e:
             response.update({'code': -1, 'result': str(e), })
-        print('REST.get data response:', response)
+        # print('REST.get data response:', response)
         self.write(json_encode(response))
 
     async def post(self):
         json_data = json_decode(self.request.body)
-        print('REST.post json data received', json_data)
+        # print('REST.post json data received', json_data)
         query = await get_query('sql/insert_row.sql')
         response = {'method': 'post', }
         try:
@@ -77,6 +98,7 @@ class AjaxHandler(tornado.web.RequestHandler):
             response.update({
                         'code': 0,
                         'id': c.lastrowid,
+                        'text': json_data['txt'],
                        })
             c.close()
             db.commit()

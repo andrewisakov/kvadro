@@ -104,3 +104,4 @@ include/
 .mypy_cache/
 .vscode/
 lib64
+kvadro.sqlite

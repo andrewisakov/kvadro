@@ -4,6 +4,6 @@
 }
 
 #error_field {
-    display: none;
-    background: #FF7777;
+    display: inline;
+    /* background: #FF7777; */
 }
